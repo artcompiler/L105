@@ -45,17 +45,10 @@ window.gcexports.viewer = (function () {
       this.componentDidUpdate();
     },
     componentDidUpdate() {
-      let data = [];
-      let cols = this.props.args.cols;
-      let vals = this.props.args.vals;
-      let lblName = cols[0];
-      let valName = cols[1];
-      vals.forEach(v => {
-        let d = {};
-        d[lblName] = v[lblName];
-        d[valName] = v[valName];
-        data.push(d);
-      });      
+      let data = this.props.data;
+      let lblName = data[0][0];
+      let valName = data[0][1];
+      data.shift();
       d3.select("svg.bar-chart").html("<g/>");
       var svg = d3.select("svg.bar-chart"),
           margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -68,8 +61,12 @@ window.gcexports.viewer = (function () {
       var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      x.domain(data.map(function(d) { return d[lblName]; }));
-      y.domain([0, d3.max(data, function(d) { return d[valName]; })]);
+      x.domain(data.map(function(d) {
+        return d[0];
+      }));
+      y.domain([0, d3.max(data, function(d) {
+        return d[1];
+      })]);
 
       g.append("g")
         .attr("class", "axis axis--x")
@@ -84,16 +81,16 @@ window.gcexports.viewer = (function () {
         .attr("y", 6)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
-        .text("Frequency");
+        .text(valName);
 
       g.selectAll(".bar")
         .data(data)
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("x", function(d) { return x(d[lblName]); })
-        .attr("y", function(d) { return y(d[valName]); })
+        .attr("x", function(d) { return x(d[0]); })
+        .attr("y", function(d) { return y(d[1]); })
         .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d.frequency); });
+        .attr("height", function(d) { return height - y(d[1]); });
     },
     render () {
       return (

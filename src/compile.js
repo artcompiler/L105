@@ -75,17 +75,10 @@ const transform = (function() {
   }
   // BEGIN VISITOR METHODS
   function barChart(node, options, resume) {
-    visit(node.elts[0], options, function (err0, val0) {
-      visit(node.elts[1], options, function (err1, val1) {
-        let cols = val0;
-        let vals = val1;
-        resume([].concat(err0).concat(err1), {
-          type: "bar-chart",
-          args: {
-            cols: cols,
-            vals: vals,
-          }
-        });
+    visit(node.elts[0], options, function (err, val) {
+      resume([].concat(err), {
+        type: "bar-chart",
+        data: val,
       });
     });
   };
@@ -146,8 +139,20 @@ const transform = (function() {
     }
   }
   function inData(node, options, resume) {
-    let data = options.data ? options.data : [];
-    resume([], data);
+    // If there is input data, then use it, otherwise use default data.
+    if (node.elts.length === 0) {
+      // No args, so use the given data or empty.
+      let data = options.data ? options.data : [];
+      resume([], data);
+    } else {
+      visit(node.elts[0], options, function (err1, val1) {
+        if (false) {
+          err1 = err1.concat(error("Argument must be a number.", node.elts[0]));
+        }
+        let data = options.data && Object.keys(options.data).length != 0 ? options.data : val1;
+        resume([].concat(err1), data);
+      });
+    }
   }
   function arg(node, options, resume) {
     visit(node.elts[0], options, function (err1, val1) {

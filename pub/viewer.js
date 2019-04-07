@@ -318,17 +318,10 @@ window.gcexports.viewer = function () {
       this.componentDidUpdate();
     },
     componentDidUpdate: function componentDidUpdate() {
-      var data = [];
-      var cols = this.props.args.cols;
-      var vals = this.props.args.vals;
-      var lblName = cols[0];
-      var valName = cols[1];
-      vals.forEach(function (v) {
-        var d = {};
-        d[lblName] = v[lblName];
-        d[valName] = v[valName];
-        data.push(d);
-      });
+      var data = this.props.data;
+      var lblName = data[0][0];
+      var valName = data[0][1];
+      data.shift();
       d3.select("svg.bar-chart").html("<g/>");
       var svg = d3.select("svg.bar-chart"),
           margin = { top: 20, right: 20, bottom: 30, left: 40 },
@@ -341,22 +334,22 @@ window.gcexports.viewer = function () {
       var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       x.domain(data.map(function (d) {
-        return d[lblName];
+        return d[0];
       }));
       y.domain([0, d3.max(data, function (d) {
-        return d[valName];
+        return d[1];
       })]);
 
       g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
 
-      g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y).ticks(10, "%")).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", "0.71em").attr("text-anchor", "end").text("Frequency");
+      g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y).ticks(10, "%")).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", "0.71em").attr("text-anchor", "end").text(valName);
 
       g.selectAll(".bar").data(data).enter().append("rect").attr("class", "bar").attr("x", function (d) {
-        return x(d[lblName]);
+        return x(d[0]);
       }).attr("y", function (d) {
-        return y(d[valName]);
+        return y(d[1]);
       }).attr("width", x.bandwidth()).attr("height", function (d) {
-        return height - y(d.frequency);
+        return height - y(d[1]);
       });
     },
     render: function render() {
@@ -374,7 +367,6 @@ window.gcexports.viewer = function () {
       return React.createElement(
         "div",
         null,
-        React.createElement("link", { rel: "stylesheet", href: "https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css", crossOrigin: "anonymous" }),
         React.createElement(
           "div",
           { className: "L105" },
