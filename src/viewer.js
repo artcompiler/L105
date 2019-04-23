@@ -81,6 +81,7 @@ window.gcexports.viewer = (function () {
         .attr("y", 6)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
+        .attr("fill", "#000")
         .text(valName);
 
       g.selectAll(".bar")
