@@ -71,16 +71,23 @@ window.gcexports.viewer = (function () {
       g.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", 25)
+        .attr("fill", "#000")
+        .attr("text-anchor", "end")
+        .text(lblName);
 
       g.append("g")
         .attr("class", "axis axis--y")
         .call(d3.axisLeft(y).ticks(10, "%"))
         .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 6)
+        .attr("x", -height / 2)
+        .attr("y", -35)
         .attr("dy", "0.71em")
-        .attr("text-anchor", "end")
+        .attr("text-anchor", "start")
         .attr("fill", "#000")
         .text(valName);
 
