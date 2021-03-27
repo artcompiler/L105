@@ -19,6 +19,7 @@ messages[1004] = "No visitor method defined for '%1'.";
 
 const transform = (function() {
   const table = {
+    "RADAR-CHART": radarChart,
     "BAR-CHART": barChart,
     "PROG" : program,
     "EXPRS" : exprs,
@@ -78,6 +79,14 @@ const transform = (function() {
     visit(node.elts[0], options, function (err, val) {
       resume([].concat(err), {
         type: "bar-chart",
+        data: val,
+      });
+    });
+  };
+  function radarChart(node, options, resume) {
+    visit(node.elts[0], options, function (err, val) {
+      resume([].concat(err), {
+        type: "radar-chart",
         data: val,
       });
     });
@@ -149,9 +158,7 @@ const transform = (function() {
         if (false) {
           err1 = err1.concat(error("Argument must be a number.", node.elts[0]));
         }
-        console.log("inData() options=" + JSON.stringify(options));
-        console.log("val1=" + JSON.stringify(val1));
-        let data = options.data && Object.keys(options.data).length != 0 ? options.data : val1;
+        let data = options.data && Object.keys(options.data).length !== 0 ? options.data : val1;
         resume([].concat(err1), data);
       });
     }
