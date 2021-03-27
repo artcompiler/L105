@@ -319,6 +319,9 @@ window.gcexports.viewer = function () {
     },
     componentDidUpdate: function componentDidUpdate() {
       var data = this.props.data;
+      if (!data) {
+        return;
+      }
       var lblName = data[0][0];
       var valName = data[0][1];
       data.shift();

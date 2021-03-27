@@ -149,6 +149,8 @@ const transform = (function() {
         if (false) {
           err1 = err1.concat(error("Argument must be a number.", node.elts[0]));
         }
+        console.log("inData() options=" + JSON.stringify(options));
+        console.log("val1=" + JSON.stringify(val1));
         let data = options.data && Object.keys(options.data).length != 0 ? options.data : val1;
         resume([].concat(err1), data);
       });
