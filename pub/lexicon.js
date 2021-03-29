@@ -1,4 +1,5 @@
 window.gcexports.globalLexicon = {
+  "axes" : { "tk": 1, "name": "AXES", "cls": "function", "length": 2, "arity": 2 },
   "bar" : { "tk": 1, "name": "BAR-CHART", "cls": "function", "length": 1, "arity": 1 },
   "radar" : { "tk": 1, "name": "RADAR-CHART", "cls": "function", "length": 1, "arity": 1 },
   "val" : { "tk": 1, "name": "VAL", "cls": "function", "length": 2 , "arity": 2 },
@@ -10,6 +11,7 @@ window.gcexports.globalLexicon = {
   "style" : { "tk": 1, "name": "STYLE", "cls": "function", "length": 2, "arity": 2 },
   "map" : { "tk": 1, "name": "MAP", "cls": "function", "length": 2, "arity": 2 },
   "apply" : { "tk": 1, "name": "APPLY", "cls": "function", "length": 2, "arity": 2 },
-  "in" : { "tk": 1, "name": "IN", "cls": "function", "length": 1, "arity": 1 },
+  "in" : { "tk": 1, "name": "DATA", "cls": "function", "length": 1, "arity": 1 },
+  "data" : { "tk": 1, "name": "DATA", "cls": "function", "length": 1, "arity": 1 },
   "arg" : { "tk": 1, "name": "ARG", "cls": "function", "length": 1, "arity": 1 }
 }

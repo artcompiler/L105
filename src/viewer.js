@@ -132,7 +132,7 @@ window.gcexports.viewer = (function () {
         w: 600,
         h: 600,
         factor: 1,
-        factorLegend: 1,
+        factorLegend: .85,
         levels: 3,
         maxValue: 0,
         radians: 2 * Math.PI,
@@ -212,14 +212,14 @@ window.gcexports.viewer = (function () {
 	  .append("g")
 	  .attr("class", "axis");
 
-      // axis.append("line")
-      //   .attr("x1", cfg.w/2)
-      //   .attr("y1", cfg.h/2)
-      //   .attr("x2", function(d, i){return cfg.w/2*(1-cfg.factor*Math.sin(i*cfg.radians/total));})
-      //   .attr("y2", function(d, i){return cfg.h/2*(1-cfg.factor*Math.cos(i*cfg.radians/total));})
-      //   .attr("class", "line")
-      //   .style("stroke", "grey")
-      //   .style("stroke-width", "1px");
+      axis.append("line")
+        .attr("x1", cfg.w/2)
+        .attr("y1", cfg.h/2)
+        .attr("x2", function(d, i){return cfg.w/2*(1-cfg.factor*Math.sin(i*cfg.radians/total));})
+        .attr("y2", function(d, i){return cfg.h/2*(1-cfg.factor*Math.cos(i*cfg.radians/total));})
+        .attr("class", "line")
+        .style("stroke", "grey")
+        .style("stroke-width", "1px");
 
       axis.append("text")
         .attr("class", "legend")
@@ -367,7 +367,7 @@ window.gcexports.viewer = (function () {
       /////////// Initiate legend ////////////////
       ////////////////////////////////////////////
 
-      var svg = d3.select('#body')
+      var svg = d3.select('#graff-view')
 	  .selectAll('svg')
 	  .append('svg')
 	  .attr("width", w+300)

@@ -19,6 +19,7 @@ messages[1004] = "No visitor method defined for '%1'.";
 
 const transform = (function() {
   const table = {
+    "AXES": axes,
     "RADAR-CHART": radarChart,
     "BAR-CHART": barChart,
     "PROG" : program,
@@ -38,7 +39,8 @@ const transform = (function() {
     "STYLE" : styleV1,
     "CONCAT" : concat,
     "ARG" : arg,
-    "IN" : inData,
+    "DATA" : data,
+    "IN" : data,
     "LAMBDA" : lambda,
     "PAREN" : paren,
     "APPLY" : apply,
@@ -75,6 +77,16 @@ const transform = (function() {
     return table[node.tag](node, options, resume);
   }
   // BEGIN VISITOR METHODS
+  function axes(node, options, resume) {
+    // Return a function value.
+    visit(node.elts[0], options, function (e1, v1) {
+      visit(node.elts[1], options, function (e2, v2) {
+        const err = [].concat(e1).concat(e2);
+        const val = Object.assign({axes: v1}, v2);          
+        resume(err, val);
+      });
+    });
+  }
   function barChart(node, options, resume) {
     visit(node.elts[0], options, function (err, val) {
       resume([].concat(err), {
@@ -84,12 +96,71 @@ const transform = (function() {
     });
   };
   function radarChart(node, options, resume) {
-    visit(node.elts[0], options, function (err, val) {
-      resume([].concat(err), {
+    visit(node.elts[0], options, function (e1, v1) {
+      const err = e1;
+      const val = {
         type: "radar-chart",
-        data: val,
-      });
+        data: getData(v1),
+      };
+      console.log("radarChart() val=" + JSON.stringify(val, null, 2));
+      resume(err, val);
     });
+    function getAxes(val) {
+      let axes;
+      if (val.axes) {
+        axes = val.axes;
+      } else {
+        val = (val.data || val).flat();
+        const hash = {};
+        axes = val.reduce((axes, v) => {
+          const axis = v.axis && v.axis.trim();
+          if (!hash[axis]) {
+            hash[axis] = true;
+            return axes.concat(axis);
+          } else {
+            return axes;
+          }
+        }, []);
+      }
+      return axes;
+    }
+    function getData(val) {
+      const axes = getAxes(val);
+      console.log("getData() axes=" + JSON.stringify(axes));
+      val = val.data || val;
+      const data = [];
+      val.forEach(d => {
+        console.log("getData() d=" + JSON.stringify(d));
+        // [{axis, value},...], {axisA, valueA, ...}, [value1, value2, ...]
+        const series = [];
+        axes.forEach((axis, i) => {
+          axis = axis.trim();
+          if (d instanceof Array) {
+            d.forEach((dd, j) => {
+              console.log("getData() dd=" + JSON.stringify(dd));
+              if (dd.axis && dd.axis.trim() === axis) {
+                series.push({
+                  axis: axis,
+                  value: dd.value,
+                });
+              } else if (i === j) {
+                series.push({
+                  axis: axis,
+                  value: !isNaN(dd) && dd || 0,
+                });
+              }
+            });
+          } else if (typeof d === 'object') {
+            series.push({
+              axis: axis,
+              value: d[axis] || 0,
+            });
+          }
+        });
+        data.push(series);
+      });
+      return data;
+    }
   };
   function str(node, options, resume) {
     let val = node.elts[0];
@@ -147,7 +218,7 @@ const transform = (function() {
       resume([], []);
     }
   }
-  function inData(node, options, resume) {
+  function data(node, options, resume) {
     // If there is input data, then use it, otherwise use default data.
     if (node.elts.length === 0) {
       // No args, so use the given data or empty.
@@ -155,11 +226,10 @@ const transform = (function() {
       resume([], data);
     } else {
       visit(node.elts[0], options, function (err1, val1) {
-        if (false) {
-          err1 = err1.concat(error("Argument must be a number.", node.elts[0]));
-        }
-        let data = options.data && Object.keys(options.data).length !== 0 ? options.data : val1;
-        resume([].concat(err1), data);
+        const val = {
+          data: options.data && Object.keys(options.data).length !== 0 ? options.data : val1,
+        };
+        resume([].concat(err1), val);
       });
     }
   }
