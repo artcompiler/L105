@@ -226,9 +226,7 @@ const transform = (function() {
       resume([], data);
     } else {
       visit(node.elts[0], options, function (err1, val1) {
-        const val = {
-          data: options.data && Object.keys(options.data).length !== 0 ? options.data : val1,
-        };
+        const val = options.data && Object.keys(options.data).length !== 0 ? options.data : val1;
         resume([].concat(err1), val);
       });
     }

@@ -88,7 +88,8 @@ window.gcexports.viewer = (function () {
 
       g.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(10, "%"))
+//        .call(d3.axisLeft(y).ticks(10, "%"))
+        .call(d3.axisLeft(y).ticks(10))
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
