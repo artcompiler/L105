@@ -343,7 +343,7 @@ window.gcexports.viewer = function () {
         return d[0];
       }));
       y.domain([0, d3.max(data, function (d) {
-        return d[1];
+        return +d[1];
       })]);
 
       g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).append("text").attr("x", width / 2).attr("y", 25).attr("fill", "#000").attr("text-anchor", "end").text(lblName);
